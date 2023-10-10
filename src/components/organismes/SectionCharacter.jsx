@@ -1,8 +1,10 @@
+import { useState } from "react";
 import Card from "../molecules/Card";
 
 
 function SectionCharacter() {
-    const character = {
+    const [character, setCharacter] = useState(null)
+    /* const character = {
         name: "Rick Sanchez",
         status:"Alive",
         species:"Human",
@@ -15,10 +17,34 @@ function SectionCharacter() {
             url:"https://rickandmortyapi.com/api/location/3"
         },
         image:"https://rickandmortyapi.com/api/character/avatar/1.jpeg"
-    };
+    }; */
+    const url = "https://rickandmortyapi.com/api/character";
+    const handlerClick = () => {
+        fetch(url).
+            then( response => {
+                console.log("Response:", response);
+                if (response.ok)
+                    return response.json()
+                else
+                    alert("Error en la conexión a la API")
+            }).
+            then(data => {
+                console.log("Data: ",data)
+                setCharacter(data)
+                //console.log(data);
+            }).catch(err=> {
+                console.log("Error", err)
+            })
+    }
+
     return (
         <div>
-            <Card character={character} />
+            <button onClick={handlerClick}>Cargar personajes</button>
+            {
+                character && character.results.map(dato => 
+                     <Card character={dato} />
+                )
+            }
         </div>        
       );
 }
